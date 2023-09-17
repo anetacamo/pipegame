@@ -1,0 +1,17 @@
+.board {
+  background-color: pink;
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  border: 2px solid black;
+}
+
+.active {
+  border: 4px solid orangered;
+}
+
+.hasWater {
+  background-color: blue;
+  transition-duration: 1000ms;
+  position: relative;
+}

@@ -1,0 +1,21 @@
+.timer {
+  margin-left: 12px;
+  border: 4px solid black;
+}
+.innertimer {
+  animation-name: barfill;
+  animation-duration: 20s;
+  animation-timing-function: linear;
+}
+
+/* The animation code */
+@keyframes barfill {
+  from {
+    height: 0%;
+    background-color: blue;
+  }
+  to {
+    height: 100%;
+    background-color: red;
+  }
+}
