@@ -8,6 +8,7 @@ interface DesktopProps {
   headLocation: number[];
   body: PipeGameTypes['map'];
   waterBody: string[];
+  gameOver: boolean;
 }
 
 const Desktop: React.FC<DesktopProps> = ({
@@ -15,6 +16,7 @@ const Desktop: React.FC<DesktopProps> = ({
   headLocation,
   body,
   waterBody,
+  gameOver,
 }) => {
   return (
     <div
@@ -47,6 +49,28 @@ const Desktop: React.FC<DesktopProps> = ({
           })}
         </div>
       ))}
+
+      {gameOver && (
+        <div
+          className={styles.modal}
+          style={{
+            top: FIELD_IN_PX * 2,
+          }}
+        >
+          {'gaeoer'.split('').map((letter, index) => (
+            <img
+              key={index}
+              className={styles.letter}
+              src={require(`/public/images/alphabet/${letter}.png`)}
+              alt={letter}
+              style={{
+                height: FIELD_IN_PX,
+                width: FIELD_IN_PX,
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

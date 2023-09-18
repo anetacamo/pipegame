@@ -1,11 +1,19 @@
 .timer {
   margin-left: 12px;
-  border: 4px solid black;
+  border: 2px solid black;
+  position: relative;
 }
+.tileHolder {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .innertimer {
   animation-name: barfill;
   animation-duration: 20s;
   animation-timing-function: linear;
+  animation-fill-mode: forwards;
 }
 
 /* The animation code */

@@ -262,6 +262,7 @@ function Home() {
               headLocation,
               body,
               waterBody,
+              gameOver,
             }}
           />
           <Controls

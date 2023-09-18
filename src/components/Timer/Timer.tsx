@@ -12,7 +12,7 @@ const Timer: React.FC<TimerProps> = ({ rows, timer }) => {
     <div
       style={{
         height: rows * FIELD_IN_PX + BORDER * 2,
-        width: FIELD_IN_PX / 4,
+        width: FIELD_IN_PX + BORDER * 2,
       }}
       className={styles.timer}
     >
@@ -20,6 +20,18 @@ const Timer: React.FC<TimerProps> = ({ rows, timer }) => {
         className={styles.innertimer}
         style={{ animationDuration: `${timer}ms` }}
       ></div>
+      <div className={styles.tileHolder}>
+        {[...Array(rows)].map((box, index) => (
+          <div
+            key={index}
+            style={{
+              height: FIELD_IN_PX,
+              width: FIELD_IN_PX,
+            }}
+            className={`box t5`}
+          ></div>
+        ))}
+      </div>
     </div>
   );
 };

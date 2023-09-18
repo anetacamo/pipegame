@@ -4,6 +4,7 @@
   flex: 1;
   flex-wrap: wrap;
   border: 2px solid black;
+  position: relative;
 }
 
 .active {
@@ -14,4 +15,18 @@
   background-color: blue;
   transition-duration: 1000ms;
   position: relative;
+}
+
+.modal {
+  display: flex;
+  flex-wrap: wrap;
+  position: absolute;
+  justify-content: center;
+  z-index: 4;
+}
+
+.letter {
+  object-fit: contain;
+  background-color: white;
+  border: 2px solid black;
 }

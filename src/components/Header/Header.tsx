@@ -9,7 +9,11 @@ const Header: React.FC<HeaderProps> = ({ score }) => {
   return (
     <div className={styles.score}>
       {'score'.split('').map((letter, index) => (
-        <img key={index} src={`/images/alphabet/${letter}.png`} alt={letter} />
+        <img
+          key={index}
+          src={require(`/public/images/alphabet/${letter}.png`)}
+          alt={letter}
+        />
       ))}
       {score
         .toString()
@@ -17,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({ score }) => {
         .map((number, index) => (
           <img
             key={index}
-            src={`/images/alphabet/${number}.png`}
+            src={require(`/public/images/alphabet/${number}.png`)}
             alt={number}
           />
         ))}
