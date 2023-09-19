@@ -57,7 +57,7 @@ const Desktop: React.FC<DesktopProps> = ({
             top: FIELD_IN_PX * 2,
           }}
         >
-          {'gaeoer'.split('').map((letter, index) => (
+          {'game_oer'.split('').map((letter, index) => (
             <img
               key={index}
               className={styles.letter}

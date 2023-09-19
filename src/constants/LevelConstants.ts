@@ -1,14 +1,12 @@
 export const levelSettings = {
   level1: {
-    rows: 5,
+    rows: 6,
     INITIAL_LOCATION: [0, 0],
-    TIMER: 3000,
+    TIMER: 30000,
     SPEED: 2000,
     DIRECTION: 'right',
     BODY: {
       '0,0': 10,
-      '2,2': 8,
-      '3,1': 7,
       '4,4': 12,
     },
   },
@@ -26,7 +24,7 @@ export const levelSettings = {
     TIMER: 15000,
     SPEED: 1500,
     DIRECTION: 'right',
-    BODY: { '0,0': 10, '5,2': 7, '1,3': 8, '7,7': 12 },
+    BODY: { '0,0': 10, '5,2': 7, '1,3': 8, '6,6': 12 },
   },
   level4: {
     rows: 7,
@@ -34,7 +32,15 @@ export const levelSettings = {
     TIMER: 15000,
     SPEED: 1500,
     DIRECTION: 'right',
-    BODY: { '0,0': 10, '5,2': 7, '1,3': 8, '7,7': 12 },
+    BODY: { '0,0': 10, '5,2': 7, '1,3': 8, '4,0': 9, '2,4': 11, '6,6': 12 },
+  },
+  level5: {
+    rows: 7,
+    INITIAL_LOCATION: [0, 0],
+    TIMER: 15000,
+    SPEED: 1500,
+    DIRECTION: 'right',
+    BODY: { '0,0': 10, '5,2': 7, '1,3': 8, '6,6': 12 },
   },
   // Add settings for other levels here
 };

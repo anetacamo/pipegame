@@ -15,6 +15,7 @@ import Suggestions from '../components/Suggestions/Suggestions';
 import Timer from '../components/Timer/Timer';
 import Board from '../components/Board/Board';
 import Controls from '../components/Controls/Controls';
+import moveOnGrid from '../utils/moveOnGrid';
 
 const exitValueToEntry = (number: number) => {
   return number < 2 ? number + 2 : number - 2;
@@ -108,33 +109,33 @@ function Home() {
     };
   }, [waterFlow, level]);
 
-  const moveOnGrid = (
-    direction: number,
-    currentLocation: number[]
-  ): number[] | null => {
-    const [x, y] = currentLocation;
-    const moveMap: Record<string, [number, number]> = {
-      0: [x, y - 1],
-      1: [x + 1, y],
-      2: [x, y + 1],
-      3: [x - 1, y],
-    };
-    const newLocation = moveMap[direction];
-    if (
-      newLocation &&
-      newLocation[0] >= 0 &&
-      newLocation[0] < rows &&
-      newLocation[1] >= 0 &&
-      newLocation[1] < rows
-    ) {
-      return newLocation;
-    }
-    return null; // Return null when the move is not valid
-  };
+  // const moveOnGrid = (
+  //   direction: number,
+  //   currentLocation: number[]
+  // ): number[] | null => {
+  //   const [x, y] = currentLocation;
+  //   const moveMap: Record<string, [number, number]> = {
+  //     0: [x, y - 1],
+  //     1: [x + 1, y],
+  //     2: [x, y + 1],
+  //     3: [x - 1, y],
+  //   };
+  //   const newLocation = moveMap[direction];
+  //   if (
+  //     newLocation &&
+  //     newLocation[0] >= 0 &&
+  //     newLocation[0] < rows &&
+  //     newLocation[1] >= 0 &&
+  //     newLocation[1] < rows
+  //   ) {
+  //     return newLocation;
+  //   }
+  //   return null; // Return null when the move is not valid
+  // };
 
   const moveHead = useCallback(
     (direction: number) => {
-      const newLocation = moveOnGrid(direction, headLocation);
+      const newLocation = moveOnGrid(direction, headLocation, rows);
       if (newLocation !== null) {
         setHeadLocation(newLocation);
       }
@@ -144,7 +145,7 @@ function Home() {
 
   const moveWaterHead = useCallback(
     (direction: number) => {
-      const newLocation = moveOnGrid(direction, waterHead);
+      const newLocation = moveOnGrid(direction, waterHead, rows);
       if (newLocation !== null) {
         setWaterHead(newLocation);
       } else {
@@ -223,12 +224,10 @@ function Home() {
           return;
         }
       } else {
-        //big pipes
         if (TANK_PIPE.includes(getPipeCode)) {
           // wait for few extra seconds
         }
         const entryDirectionCode = exitValueToEntry(waterDirection);
-        //crosspiece
         if (CROSS_PIPE.includes(getPipeCode)) {
           if (entryDirectionCode === 0 || entryDirectionCode === 2) {
             generatedCode = '0x0x';
