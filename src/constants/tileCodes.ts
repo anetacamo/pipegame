@@ -30,3 +30,4 @@ export const CONSTANT: number[] = [7, 8, 9, 10, 11, 12, 13];
 export const CROSS_PIPE: number[] = [0];
 export const TANK_PIPE: number[] = [7, 8];
 export const END_PIPES: number[] = [9, 10, 11, 12];
+export const WATERFLOW: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8];

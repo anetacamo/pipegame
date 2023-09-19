@@ -6,6 +6,8 @@
 - style the buttons
 - add all the alphabet letters
 - next level button present when game over
+- pipes need to become white on each new level
+- let the water flow error
 
 ### nice TODO
 

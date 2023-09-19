@@ -12,6 +12,7 @@ import {
   END_PIPES,
   TANK_PIPE,
   TILE_CODES,
+  WATERFLOW,
 } from '../constants/tileCodes';
 import { PipeGameTypes } from '../interfaces/gameTypes';
 import {
@@ -20,6 +21,7 @@ import {
   randomPipe,
 } from '../utils/gameUtils';
 import moveOnGrid from '../utils/moveOnGrid';
+import useKeyboardInput from '../utils/useKeyboardInput';
 
 function PipeGame() {
   const buttonNewGame = useRef<HTMLButtonElement | null>(null);
@@ -48,9 +50,10 @@ function PipeGame() {
   const [timer, setTimer] = useState(initial_timer);
   const [levelDone, setLevelDone] = useState(false);
   const [waterDirection, setWaterDirection] = useState(0);
+  const [gameWon, setGameWon] = useState(false);
 
-  useEffect(() => {
-    const arrowClickHandler = (e: KeyboardEvent) => {
+  const handleKeyPress = useCallback(
+    (key: string) => {
       const moveDirections: Record<string, number> = {
         ArrowUp: 0,
         ArrowRight: 1,
@@ -58,18 +61,15 @@ function PipeGame() {
         ArrowLeft: 3,
       };
 
-      if (e.key in moveDirections) {
-        moveHead(moveDirections[e.key]);
-      } else if (e.keyCode === 32) {
+      if (key in moveDirections) {
+        moveHead(moveDirections[key]);
+      } else if (key === ' ') {
         CONSTANT.includes(Number(body[headLocation.toString()])) || fillField();
       }
-    };
-
-    window.addEventListener('keydown', arrowClickHandler);
-    return () => {
-      window.removeEventListener('keydown', arrowClickHandler);
-    };
-  }, [headLocation, body]);
+    },
+    [headLocation, body]
+  );
+  useKeyboardInput(handleKeyPress);
 
   useEffect(() => {
     if (!gameOver && waterFlow && !levelDone) {
@@ -154,37 +154,50 @@ function PipeGame() {
     resetGame();
   };
 
-  const checkNextTile = () => {
-    if (waterHead.toString() in body) {
-      const getPipeCode = Number(body[waterHead.toString()]);
-      let generatedCode = TILE_CODES[getPipeCode];
-      let exitDirection;
+  const onCollision = () => {
+    setWaterFlow(false);
+    if (Object.values(waterBody).length > 5) {
+      setLevelDone(true);
+      level === 5 && setGameWon(true);
+    } else {
+      setGameOver(true);
+    }
+  };
 
-      if (END_PIPES.includes(getPipeCode)) {
+  const checkNextTile = () => {
+    //is waterflow inside the pipes?
+    if (waterHead.toString() in body) {
+      //get the code
+      const pipeCode = Number(body[waterHead.toString()]);
+      let pipeString = TILE_CODES[pipeCode];
+      let exitDirection = 0;
+
+      if (TANK_PIPE.includes(pipeCode)) {
+        // wait for few extra seconds
+      }
+
+      if (END_PIPES.includes(pipeCode)) {
+        //entry piece
         if (Object.values(waterBody).length < 1) {
-          //entry piece
-          exitDirection = generatedCode.toString().indexOf('0');
-        } else {
+          exitDirection = pipeString.indexOf('0');
           //endpiece
+        } else {
           setWaterBody([...waterBody, waterHead?.toString()]);
-          setWaterFlow(false);
-          setLevelDone(true);
+          onCollision();
           return;
         }
-      } else {
-        if (TANK_PIPE.includes(getPipeCode)) {
-          // wait for few extra seconds
-        }
+      }
+      if (WATERFLOW.includes(pipeCode)) {
         const entryDirectionCode = exitValueToEntry(waterDirection);
-        if (CROSS_PIPE.includes(getPipeCode)) {
+        if (CROSS_PIPE.includes(pipeCode)) {
           if (entryDirectionCode === 0 || entryDirectionCode === 2) {
-            generatedCode = '0x0x';
+            pipeString = '0x0x';
           } else {
-            generatedCode = 'x0x0';
+            pipeString = 'x0x0';
           }
         }
         exitDirection = findOutputIndex(
-          generatedCode?.toString(),
+          pipeString?.toString(),
           entryDirectionCode
         );
       }
@@ -192,8 +205,7 @@ function PipeGame() {
       setWaterBody([...waterBody, waterHead?.toString()]);
       moveWaterHead(exitDirection);
     } else {
-      setWaterFlow(false);
-      setGameOver(true);
+      onCollision();
     }
   };
 
@@ -210,6 +222,8 @@ function PipeGame() {
               body,
               waterBody,
               gameOver,
+              gameWon,
+              levelDone,
             }}
           />
           <Controls

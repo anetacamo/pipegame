@@ -9,6 +9,8 @@ interface DesktopProps {
   body: PipeGameTypes['map'];
   waterBody: string[];
   gameOver: boolean;
+  gameWon: boolean;
+  levelDone: boolean;
 }
 
 const Desktop: React.FC<DesktopProps> = ({
@@ -17,7 +19,19 @@ const Desktop: React.FC<DesktopProps> = ({
   body,
   waterBody,
   gameOver,
+  gameWon,
+  levelDone,
 }) => {
+  let message = '';
+
+  if (gameOver) {
+    message = 'game___oer';
+  } else if (gameWon) {
+    message = 'game___o';
+  } else if (levelDone) {
+    message = 'leel___doe';
+  }
+
   return (
     <div
       className={styles.board}
@@ -50,27 +64,25 @@ const Desktop: React.FC<DesktopProps> = ({
         </div>
       ))}
 
-      {gameOver && (
-        <div
-          className={styles.modal}
-          style={{
-            top: FIELD_IN_PX * 2,
-          }}
-        >
-          {'game___oer'.split('').map((letter, index) => (
-            <img
-              key={index}
-              className={styles.letter}
-              src={require(`/public/images/alphabet/${letter}.png`)}
-              alt={letter}
-              style={{
-                height: FIELD_IN_PX,
-                width: FIELD_IN_PX,
-              }}
-            />
-          ))}
-        </div>
-      )}
+      <div
+        className={styles.modal}
+        style={{
+          top: FIELD_IN_PX * 2,
+        }}
+      >
+        {message.split('').map((letter, index) => (
+          <img
+            key={index}
+            className={styles.letter}
+            src={require(`/public/images/alphabet/${letter}.png`)}
+            alt={letter}
+            style={{
+              height: FIELD_IN_PX,
+              width: FIELD_IN_PX,
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 };
