@@ -21,7 +21,7 @@ const exitValueToEntry = (number: number) => {
   return number < 2 ? number + 2 : number - 2;
 };
 
-function Home() {
+function PipeGame() {
   const buttonNewGame = useRef<HTMLButtonElement | null>(null);
   const buttonNextLevel = useRef<HTMLButtonElement | null>(null);
 
@@ -37,23 +37,6 @@ function Home() {
   const randomPipe = () => Math.floor(Math.random() * BASIC.length);
   const pipes = [...Array(rows)].map((row) => randomPipe());
   const [upcomingFields, setUpcomingFields] = useState(pipes);
-
-  // const createInitialState = () => {
-  //   return {
-  //     headLocation: INITIAL_LOCATION,
-  //     body: BODY,
-  //     waterFlow: false,
-  //     waterBody: [],
-  //     waterHead: INITIAL_LOCATION,
-  //     timer: TIMER,
-  //     levelDone: false,
-  //     waterDirection: 0,
-  //   };
-  // };
-
-  // const [gameState, setGameState] = useState(createInitialState);
-
-  // const { headLocation } = gameState;
 
   const [headLocation, setHeadLocation] = useState(INITIAL_LOCATION);
   const [body, setBody] = useState<PipeGameTypes['map']>(BODY);
@@ -108,30 +91,6 @@ function Home() {
       clearInterval(interval);
     };
   }, [waterFlow, level]);
-
-  // const moveOnGrid = (
-  //   direction: number,
-  //   currentLocation: number[]
-  // ): number[] | null => {
-  //   const [x, y] = currentLocation;
-  //   const moveMap: Record<string, [number, number]> = {
-  //     0: [x, y - 1],
-  //     1: [x + 1, y],
-  //     2: [x, y + 1],
-  //     3: [x - 1, y],
-  //   };
-  //   const newLocation = moveMap[direction];
-  //   if (
-  //     newLocation &&
-  //     newLocation[0] >= 0 &&
-  //     newLocation[0] < rows &&
-  //     newLocation[1] >= 0 &&
-  //     newLocation[1] < rows
-  //   ) {
-  //     return newLocation;
-  //   }
-  //   return null; // Return null when the move is not valid
-  // };
 
   const moveHead = useCallback(
     (direction: number) => {
@@ -282,7 +241,7 @@ function Home() {
     </div>
   );
 }
-export default Home;
+export default PipeGame;
 
 // const handleCollision = () => {
 //   setWaterFlow(false);

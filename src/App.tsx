@@ -1,11 +1,11 @@
 import React from 'react';
-import Home from './screens/home';
+import PipeGame from './screens/PipeGame';
 import './App.scss';
 
 function App() {
   return (
     <div className='App'>
-      <Home />
+      <PipeGame />
     </div>
   );
 }
