@@ -3,26 +3,20 @@ import styles from './Header.module.scss';
 
 interface HeaderProps {
   score: number;
+  level: number;
 }
 
-const Header: React.FC<HeaderProps> = ({ score }) => {
+const Header: React.FC<HeaderProps> = ({ score, level }) => {
   return (
     <div className={styles.score}>
-      {'score'.split('').map((letter, index) => (
-        <img
-          key={index}
-          src={require(`/public/images/alphabet/${letter}.png`)}
-          alt={letter}
-        />
-      ))}
-      {score
+      {`${level}_score_${score}`
         .toString()
         .split('')
-        .map((number, index) => (
+        .map((letter, index) => (
           <img
             key={index}
-            src={require(`/public/images/alphabet/${number}.png`)}
-            alt={number}
+            src={require(`/public/images/alphabet/${letter}.png`)}
+            alt={letter}
           />
         ))}
     </div>

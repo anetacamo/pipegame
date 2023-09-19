@@ -5,7 +5,7 @@ import Header from '../components/Header/Header';
 import Suggestions from '../components/Suggestions/Suggestions';
 import Timer from '../components/Timer/Timer';
 import { LEVEL, SCORE } from '../constants/GameConstants';
-import { levelSettings } from '../constants/LevelConstants';
+import { LEVEL_SETTINGS } from '../constants/LevelConstants';
 import {
   CONSTANT,
   CROSS_PIPE,
@@ -29,20 +29,23 @@ function PipeGame() {
   const [score, setScore] = useState(SCORE);
   const [level, setLevel] = useState(LEVEL);
 
-  const levelName = `level${level}` as keyof typeof levelSettings;
-  const { BODY, INITIAL_LOCATION, TIMER, SPEED, rows } = levelSettings[
-    levelName
-  ];
+  const levelName = `level${level}` as keyof typeof LEVEL_SETTINGS;
+  const {
+    initial_body,
+    initial_location,
+    initial_timer,
+    initial_speed,
+    initial_rows,
+  } = LEVEL_SETTINGS[levelName];
 
-  const pipes = [...Array(rows)].map((row) => randomPipe());
+  const pipes = [...Array(initial_rows)].map((row) => randomPipe());
   const [upcomingFields, setUpcomingFields] = useState(pipes);
-
-  const [headLocation, setHeadLocation] = useState(INITIAL_LOCATION);
-  const [body, setBody] = useState<PipeGameTypes['map']>(BODY);
+  const [headLocation, setHeadLocation] = useState(initial_location);
+  const [body, setBody] = useState<PipeGameTypes['map']>(initial_body);
   const [waterFlow, setWaterFlow] = useState(false);
   const [waterBody, setWaterBody] = useState<any>([]);
-  const [waterHead, setWaterHead] = useState(INITIAL_LOCATION);
-  const [timer, setTimer] = useState(TIMER);
+  const [waterHead, setWaterHead] = useState(initial_location);
+  const [timer, setTimer] = useState(initial_timer);
   const [levelDone, setLevelDone] = useState(false);
   const [waterDirection, setWaterDirection] = useState(0);
 
@@ -73,7 +76,7 @@ function PipeGame() {
       const interval = setInterval(() => {
         checkNextTile();
         setScore((prevScore) => prevScore + 10);
-      }, SPEED);
+      }, initial_speed);
 
       return () => {
         clearInterval(interval);
@@ -93,7 +96,7 @@ function PipeGame() {
 
   const moveHead = useCallback(
     (direction: number) => {
-      const newLocation = moveOnGrid(direction, headLocation, rows);
+      const newLocation = moveOnGrid(direction, headLocation, initial_rows);
       if (newLocation !== null) {
         setHeadLocation(newLocation);
       }
@@ -103,7 +106,7 @@ function PipeGame() {
 
   const moveWaterHead = useCallback(
     (direction: number) => {
-      const newLocation = moveOnGrid(direction, waterHead, rows);
+      const newLocation = moveOnGrid(direction, waterHead, initial_rows);
       if (newLocation !== null) {
         setWaterHead(newLocation);
       } else {
@@ -117,20 +120,22 @@ function PipeGame() {
   //fillField with the pipe from the random pipe generated list and generate new pipe to the list
   const fillField = () => {
     const newUpcomingFields = [...upcomingFields.slice(1), randomPipe()];
+
     setBody((prevBody) => ({
       ...prevBody,
       [headLocation.toString()]: upcomingFields[0],
     }));
+
     setUpcomingFields(newUpcomingFields);
   };
 
   const resetGame = () => {
-    setHeadLocation(INITIAL_LOCATION);
-    setBody(BODY);
+    setHeadLocation(initial_location);
+    setWaterHead(initial_location);
+    setBody(initial_body);
     setWaterFlow(false);
     setWaterBody([]);
-    setWaterHead(INITIAL_LOCATION);
-    setTimer(TIMER);
+    setTimer(initial_timer);
     setLevelDone(false);
     setWaterDirection(0);
   };
@@ -145,8 +150,8 @@ function PipeGame() {
 
   const newLevelHandler = () => {
     buttonNextLevel.current?.blur();
-    resetGame();
     setLevel(level + 1);
+    resetGame();
   };
 
   const checkNextTile = () => {
@@ -194,13 +199,13 @@ function PipeGame() {
 
   return (
     <div>
-      <Header score={score} />
+      <Header score={score} level={level} />
       <div className='screen'>
         <Suggestions upcomingFields={upcomingFields} />
         <div>
           <Board
             {...{
-              rows,
+              rows: initial_rows,
               headLocation,
               body,
               waterBody,
@@ -220,35 +225,11 @@ function PipeGame() {
             }}
           />
         </div>
-        <Timer rows={rows} timer={timer} />
+        <Timer rows={initial_rows} timer={timer} />
       </div>
     </div>
   );
 }
 export default PipeGame;
-
-// const handleCollision = () => {
-//   setWaterFlow(false);
-//   if (Object.values(waterBody).length < 8) {
-//     setLevelDone(true);
-//   } else {
-//     setGameOver(true);
-//   }
-// };
-
-// const createInitialState = () => {
-//   return {
-//     headLocation: INITIAL_LOCATION,
-//     body: BODY,
-//     waterFlow: false,
-//     waterBody: [],
-//     waterHead: INITIAL_LOCATION,
-//     timer: TIMER,
-//     levelDone: false,
-//     waterDirection: DIRECTION,
-//   };
-// };
-
-// const [gameState, setGameState] = useState(createInitialState);
 
 //423
