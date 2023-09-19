@@ -1,25 +1,25 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { LEVEL, SCORE } from '../constants/GameConstants';
-import { levelSettings } from '../constants/LevelConstants';
-import {
-  TILE_CODES,
-  CONSTANT,
-  BASIC,
-  END_PIPES,
-  TANK_PIPE,
-  CROSS_PIPE,
-} from '../constants/tileCodes';
-import { PipeGameTypes } from '../interfaces/gameTypes';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Board from '../components/Board/Board';
+import Controls from '../components/Controls/Controls';
 import Header from '../components/Header/Header';
 import Suggestions from '../components/Suggestions/Suggestions';
 import Timer from '../components/Timer/Timer';
-import Board from '../components/Board/Board';
-import Controls from '../components/Controls/Controls';
+import { LEVEL, SCORE } from '../constants/GameConstants';
+import { levelSettings } from '../constants/LevelConstants';
+import {
+  CONSTANT,
+  CROSS_PIPE,
+  END_PIPES,
+  TANK_PIPE,
+  TILE_CODES,
+} from '../constants/tileCodes';
+import { PipeGameTypes } from '../interfaces/gameTypes';
+import {
+  exitValueToEntry,
+  findOutputIndex,
+  randomPipe,
+} from '../utils/gameUtils';
 import moveOnGrid from '../utils/moveOnGrid';
-
-const exitValueToEntry = (number: number) => {
-  return number < 2 ? number + 2 : number - 2;
-};
 
 function PipeGame() {
   const buttonNewGame = useRef<HTMLButtonElement | null>(null);
@@ -34,7 +34,6 @@ function PipeGame() {
     levelName
   ];
 
-  const randomPipe = () => Math.floor(Math.random() * BASIC.length);
   const pipes = [...Array(rows)].map((row) => randomPipe());
   const [upcomingFields, setUpcomingFields] = useState(pipes);
 
@@ -149,21 +148,6 @@ function PipeGame() {
     resetGame();
     setLevel(level + 1);
   };
-
-  function findOutputIndex(inputString: string, number: number) {
-    if (inputString[number] !== '0') {
-      setGameOver(true);
-      return -1;
-    }
-
-    const otherZeroIndex = inputString.indexOf('0', 0);
-    if (otherZeroIndex !== number) {
-      return otherZeroIndex;
-    } else {
-      const nextZeroIndex = inputString.indexOf('0', otherZeroIndex + 1);
-      return nextZeroIndex;
-    }
-  }
 
   const checkNextTile = () => {
     if (waterHead.toString() in body) {
