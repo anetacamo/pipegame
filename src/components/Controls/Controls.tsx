@@ -3,31 +3,42 @@ import React from 'react';
 interface ControlsProps {
   newGameHandler: () => void;
   waterFlow: boolean;
-  gameOver: boolean;
+  gameWon: boolean;
+
   levelDone: boolean;
   newLevelHandler: () => void;
   setWaterFlow: (value: boolean) => void;
   buttonNextLevelRef?: any;
   buttonNewGameRef?: any;
+  text?: string;
 }
 
 const Controls: React.FC<ControlsProps> = ({
   newGameHandler,
   waterFlow,
-  gameOver,
+
   levelDone,
   newLevelHandler,
   buttonNextLevelRef,
   buttonNewGameRef,
   setWaterFlow,
+  gameWon,
+  text,
 }) => {
   return (
     <div>
-      <button onClick={newGameHandler} ref={buttonNewGameRef}>
-        New Game
-      </button>
-      {gameOver && <p>game over</p>}
-      {levelDone && (
+      <div className='flex'>
+        <button onClick={newGameHandler} ref={buttonNewGameRef}>
+          New Game
+        </button>
+        {!waterFlow && (
+          <button onClick={() => setWaterFlow(true)}>
+            Let the water flow!
+          </button>
+        )}
+      </div>
+
+      {levelDone && !gameWon && (
         <>
           <p>success!</p>
           <button onClick={newLevelHandler} ref={buttonNextLevelRef}>
@@ -35,8 +46,8 @@ const Controls: React.FC<ControlsProps> = ({
           </button>
         </>
       )}
-      {!waterFlow && (
-        <button onClick={() => setWaterFlow(true)}>Let the water flow!</button>
+      {text && (
+        <p style={{ whiteSpace: 'pre-line', position: 'absolute' }}>{text}</p>
       )}
     </div>
   );

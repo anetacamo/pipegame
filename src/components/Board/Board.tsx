@@ -25,11 +25,11 @@ const Desktop: React.FC<DesktopProps> = ({
   let message = '';
 
   if (gameOver) {
-    message = 'game___oer';
+    message = 'game____ouer';
   } else if (gameWon) {
-    message = 'game___o';
+    message = 'you___won';
   } else if (levelDone) {
-    message = 'leel___doe';
+    message = 'you___made_it';
   }
 
   return (

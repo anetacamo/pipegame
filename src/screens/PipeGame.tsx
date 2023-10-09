@@ -38,6 +38,7 @@ function PipeGame() {
     initial_timer,
     initial_speed,
     initial_rows,
+    text,
   } = LEVEL_SETTINGS[levelName];
 
   const pipes = [...Array(initial_rows)].map((row) => randomPipe());
@@ -110,8 +111,7 @@ function PipeGame() {
       if (newLocation !== null) {
         setWaterHead(newLocation);
       } else {
-        setWaterFlow(false);
-        setLevelDone(true);
+        onCollision();
       }
     },
     [waterHead]
@@ -171,11 +171,9 @@ function PipeGame() {
       const pipeCode = Number(body[waterHead.toString()]);
       let pipeString = TILE_CODES[pipeCode];
       let exitDirection = 0;
-
       if (TANK_PIPE.includes(pipeCode)) {
         // wait for few extra seconds
       }
-
       if (END_PIPES.includes(pipeCode)) {
         //entry piece
         if (Object.values(waterBody).length < 1) {
@@ -236,6 +234,8 @@ function PipeGame() {
               levelDone,
               newLevelHandler,
               setWaterFlow,
+              gameWon,
+              text,
             }}
           />
         </div>
