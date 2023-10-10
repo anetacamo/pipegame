@@ -6,7 +6,7 @@ import { FIELD_IN_PX, BORDER } from '../../constants/GameConstants';
 interface DesktopProps {
   rows: number;
   headLocation: number[];
-  body: PipeGameTypes['map'];
+  body: PipeGameTypes['body'];
   waterBody: string[];
   gameOver: boolean;
   gameWon: boolean;
@@ -24,12 +24,23 @@ const Desktop: React.FC<DesktopProps> = ({
 }) => {
   let message = '';
 
+  const convertMessage = (message: string) => {
+    return message
+      .split(' ')
+      .map((word: string) => {
+        const letters = word.length;
+        const spaces = '_'.repeat(rows - letters);
+        return word + spaces;
+      })
+      .join('');
+  };
+
   if (gameOver) {
-    message = 'game____ouer';
+    message = convertMessage('game ouer');
   } else if (gameWon) {
-    message = 'you___won';
+    message = convertMessage('you beat the game');
   } else if (levelDone) {
-    message = 'you___made_it';
+    message = convertMessage('you made it');
   }
 
   return (

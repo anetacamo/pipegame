@@ -1,25 +1,26 @@
 export interface PipeGameTypes {
-  map: Record<string, string | number>;
-  tileCode: Record<string, string>;
-  upcomingFields: number[];
+  body: Body;
   gameOver: boolean;
-  score: number;
+  gameWon: boolean;
+  headLocation: Location;
   level: number;
-  gameState: GameState;
+  levelDone: boolean;
+  rows: number;
+  score: number;
+  tileCode: Record<string, string>;
+  timer: number;
+  upcomingFields: number[];
+  waterBody: [number, number][];
+  waterDirection: string;
+  waterFlow: boolean;
+  waterHead: Location;
+}
+
+interface Body {
+  [key: string]: number | undefined;
 }
 
 interface Location {
   x: number;
   y: number;
 }
-
-type GameState = {
-  headLocation: Location;
-  body: Record<string, string | number>;
-  waterFlow: boolean;
-  waterBody: [number, number][];
-  waterHead: Location;
-  levelDone: boolean;
-  waterDirection: string;
-  timer: number;
-};

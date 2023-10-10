@@ -31,7 +31,6 @@ function PipeGame() {
   const [score, setScore] = useState(SCORE);
   const [level, setLevel] = useState(LEVEL);
 
-  const levelName = `level${level}` as keyof typeof LEVEL_SETTINGS;
   const {
     initial_body,
     initial_location,
@@ -39,12 +38,13 @@ function PipeGame() {
     initial_speed,
     initial_rows,
     text,
-  } = LEVEL_SETTINGS[levelName];
+  } = LEVEL_SETTINGS[level];
 
   const pipes = [...Array(initial_rows)].map((row) => randomPipe());
+
   const [upcomingFields, setUpcomingFields] = useState(pipes);
   const [headLocation, setHeadLocation] = useState(initial_location);
-  const [body, setBody] = useState<PipeGameTypes['map']>(initial_body);
+  const [body, setBody] = useState<PipeGameTypes['body']>(initial_body);
   const [waterFlow, setWaterFlow] = useState(false);
   const [waterBody, setWaterBody] = useState<any>([]);
   const [waterHead, setWaterHead] = useState(initial_location);
@@ -53,17 +53,13 @@ function PipeGame() {
   const [waterDirection, setWaterDirection] = useState(0);
   const [gameWon, setGameWon] = useState(false);
 
+  const moveDirections = ['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'];
+
   const handleKeyPress = useCallback(
     (key: string) => {
-      const moveDirections: Record<string, number> = {
-        ArrowUp: 0,
-        ArrowRight: 1,
-        ArrowDown: 2,
-        ArrowLeft: 3,
-      };
-
-      if (key in moveDirections) {
-        moveHead(moveDirections[key]);
+      const index = moveDirections.indexOf(key);
+      if (index !== -1) {
+        moveHead(moveDirections.indexOf(key));
       } else if (key === ' ') {
         CONSTANT.includes(Number(body[headLocation.toString()])) || fillField();
       }
@@ -129,20 +125,20 @@ function PipeGame() {
     setUpcomingFields(newUpcomingFields);
   };
 
-  const resetGame = () => {
-    setHeadLocation(initial_location);
-    setWaterHead(initial_location);
-    setBody(initial_body);
+  const resetGame = (newLevel: number) => {
+    setHeadLocation(LEVEL_SETTINGS[newLevel].initial_location);
+    setWaterHead(LEVEL_SETTINGS[newLevel].initial_location);
+    setBody(LEVEL_SETTINGS[newLevel].initial_body);
     setWaterFlow(false);
     setWaterBody([]);
-    setTimer(initial_timer);
+    setTimer(LEVEL_SETTINGS[newLevel].initial_timer);
     setLevelDone(false);
     setWaterDirection(0);
   };
 
   const newGameHandler = () => {
     buttonNewGame.current?.blur();
-    resetGame();
+    resetGame(1);
     setScore(SCORE);
     setLevel(LEVEL);
     setGameOver(false);
@@ -150,8 +146,9 @@ function PipeGame() {
 
   const newLevelHandler = () => {
     buttonNextLevel.current?.blur();
-    setLevel(level + 1);
-    resetGame();
+    const newLevel = level + 1;
+    setLevel(newLevel);
+    resetGame(newLevel);
   };
 
   const onCollision = () => {
@@ -190,8 +187,10 @@ function PipeGame() {
         if (CROSS_PIPE.includes(pipeCode)) {
           if (entryDirectionCode === 0 || entryDirectionCode === 2) {
             pipeString = '0x0x';
+            setScore(score + 20);
           } else {
             pipeString = 'x0x0';
+            setScore(score + 20);
           }
         }
         exitDirection = findOutputIndex(
