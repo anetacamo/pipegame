@@ -4,7 +4,6 @@ interface ControlsProps {
   newGameHandler: () => void;
   waterFlow: boolean;
   gameWon: boolean;
-
   levelDone: boolean;
   newLevelHandler: () => void;
   setWaterFlow: (value: boolean) => void;
@@ -16,7 +15,6 @@ interface ControlsProps {
 const Controls: React.FC<ControlsProps> = ({
   newGameHandler,
   waterFlow,
-
   levelDone,
   newLevelHandler,
   buttonNextLevelRef,
@@ -39,12 +37,9 @@ const Controls: React.FC<ControlsProps> = ({
       </div>
 
       {levelDone && !gameWon && (
-        <>
-          <p>success!</p>
-          <button onClick={newLevelHandler} ref={buttonNextLevelRef}>
-            Next Level
-          </button>
-        </>
+        <button onClick={newLevelHandler} ref={buttonNextLevelRef}>
+          Next Level
+        </button>
       )}
       {text && (
         <p style={{ whiteSpace: 'pre-line', position: 'absolute' }}>{text}</p>

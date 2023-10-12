@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Board from '../components/Board/Board';
 import Controls from '../components/Controls/Controls';
 import Header from '../components/Header/Header';
+import ScoreBoard from '../components/ScoreBoard/ScoreBoard';
 import Suggestions from '../components/Suggestions/Suggestions';
 import Timer from '../components/Timer/Timer';
 import { LEVEL, SCORE } from '../constants/GameConstants';
@@ -238,7 +239,8 @@ function PipeGame() {
             }}
           />
         </div>
-        <Timer rows={initial_rows} timer={timer} />
+        <Timer rows={initial_rows} timer={timer} waterFlow={waterFlow} />
+        <ScoreBoard score={score} gameOver={gameOver} rows={initial_rows} />
       </div>
     </div>
   );

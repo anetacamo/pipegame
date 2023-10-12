@@ -11,7 +11,7 @@
 
 .innertimer {
   animation-name: barfill;
-  animation-duration: 20s;
+  //  animation-duration: 20s;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
 }
@@ -26,4 +26,10 @@
     height: 100%;
     background-color: red;
   }
+}
+
+.finalState {
+  animation-name: none; /* Stops the animation */
+  height: 100%;
+  background-color: red;
 }

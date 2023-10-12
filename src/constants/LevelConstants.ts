@@ -14,7 +14,7 @@ export const LEVEL_SETTINGS = [
   {
     initial_rows: 6,
     initial_location: [0, 0],
-    initial_timer: 30000,
+    initial_timer: 28000,
     initial_speed: 2000,
     text:
       'welcome & Watch out! This game is for desktop only.\n Move on the field by the arrows up, right, down and left. Press spacebar to place a pipe tile.\n You can see upcoming tiles on the left. Timer on the right.\n When times runs out, water will flow from top left pipe.',
@@ -26,7 +26,7 @@ export const LEVEL_SETTINGS = [
   {
     initial_rows: 6,
     initial_location: [0, 0],
-    initial_timer: 30000,
+    initial_timer: 26000,
     initial_speed: 1500,
     text:
       'If you use three cross tiles in one game you will get extra points in the future.',
@@ -35,7 +35,7 @@ export const LEVEL_SETTINGS = [
   {
     initial_rows: 7,
     initial_location: [0, 0],
-    initial_timer: 15000,
+    initial_timer: 24000,
     initial_speed: 1500,
     text: 'If you encounter suspisious behaviour, refresh!',
     initial_body: { '0,0': 10, '5,2': 7, '1,3': 8, '6,6': 12 },
@@ -43,7 +43,7 @@ export const LEVEL_SETTINGS = [
   {
     initial_rows: 7,
     initial_location: [0, 0],
-    initial_timer: 15000,
+    initial_timer: 22000,
     initial_speed: 1500,
     text:
       'spacebar to place a pipe tile. You can see upcoming tiles on the left.',
@@ -59,7 +59,7 @@ export const LEVEL_SETTINGS = [
   {
     initial_rows: 7,
     initial_location: [0, 0],
-    initial_timer: 15000,
+    initial_timer: 20000,
     initial_speed: 1500,
     text:
       'spacebar to place a pipe tile. You can see upcoming tiles on the left.',

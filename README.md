@@ -2,20 +2,37 @@
 
 - add more levels
 - new level modal
-- add water flow button
-- style the buttons
-- add all the alphabet letters
-- next level button present when game over
+- missing letters: q,v,x,z
 - pipes need to become white on each new level
 - let the water flow error
+- hide let the water flow on level done
+- bug: the laid tiles with water can still be changed
+- new game button should be further away; too easy to mistakenly click it
+
+- refresh page after score submit
+- order scores
 
 ### nice TODO
 
 - animate water flow
-- add info about the game
 - add more dynamic score
-- store top results online
-- add instructions
 - slow down on big pipe
 - score should become 0 on game lost
-- score added also on a non-matching or non-existing tile
+- BUG: score added also on a non-matching or non-existing tile
+- disable interaction with the board on game lost
+
+### DONE!
+
+- next level button present when game over
+
+  10.10.23
+
+- style the buttons
+- add instructions
+- add water flow button
+- optimized message logging on the board
+- fixed the bug with unupdated level data
+
+  12.10.23
+
+- store top results online
