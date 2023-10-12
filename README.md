@@ -8,7 +8,7 @@
 - hide let the water flow on level done
 - bug: the laid tiles with water can still be changed
 - new game button should be further away; too easy to mistakenly click it
-
+- on whole game finnish cannot log score
 - refresh page after score submit
 - order scores
 

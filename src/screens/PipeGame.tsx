@@ -240,7 +240,12 @@ function PipeGame() {
           />
         </div>
         <Timer rows={initial_rows} timer={timer} waterFlow={waterFlow} />
-        <ScoreBoard score={score} gameOver={gameOver} rows={initial_rows} />
+        <ScoreBoard
+          score={score}
+          gameOver={gameOver}
+          rows={initial_rows}
+          gameWon={gameWon}
+        />
       </div>
     </div>
   );

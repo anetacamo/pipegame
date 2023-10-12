@@ -14,6 +14,7 @@ interface ScoreBoardProps {
   score: number;
   gameOver: boolean;
   rows: number;
+  gameWon: boolean;
 }
 
 type Score = {
@@ -22,7 +23,12 @@ type Score = {
   id: string;
 };
 
-const ScoreBoard: React.FC<ScoreBoardProps> = ({ score, gameOver, rows }) => {
+const ScoreBoard: React.FC<ScoreBoardProps> = ({
+  score,
+  gameOver,
+  rows,
+  gameWon,
+}) => {
   const [scores, setScores] = useState<Score[]>([]);
   const [submit, setSubmit] = useState<boolean>(false);
   const inputName = useRef<HTMLInputElement | null>(null);
@@ -83,7 +89,7 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({ score, gameOver, rows }) => {
         </p>
       ))}
       <br />
-      {gameOver && isScoreLegendary() && !submit && (
+      {(gameOver || gameWon) && isScoreLegendary() && !submit && (
         <>
           <p>
             WOW! No way. You made new record!
