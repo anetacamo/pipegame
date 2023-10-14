@@ -3,4 +3,9 @@ export const LEVEL = 1;
 export const SCORE = 0;
 export const BORDER = 2;
 
-export const directions: string[] = ['up', 'right', 'down', 'left'];
+export const moveDirections = [
+  'ArrowUp',
+  'ArrowRight',
+  'ArrowDown',
+  'ArrowLeft',
+];

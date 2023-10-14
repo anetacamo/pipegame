@@ -1,32 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Timer.module.scss';
 import { FIELD_IN_PX, BORDER } from '../../constants/GameConstants';
+import { LEVEL_SETTINGS } from '../../constants/LevelConstants';
 
 interface TimerProps {
-  rows: number;
-  timer: number;
-  waterFlow: boolean;
+  timer: boolean;
+  level: number;
 }
 
-const Timer: React.FC<TimerProps> = ({ rows, timer, waterFlow }) => {
+const Timer: React.FC<TimerProps> = ({ timer, level }) => {
   const [isFinalState, setIsFinalState] = useState(false);
 
-  //start the water
   useEffect(() => {
     setIsFinalState(true);
-    setTimeout(() => {
-      setIsFinalState(false);
-    }, 10);
+    if (timer === true) {
+      setTimeout(() => {
+        setIsFinalState(false);
+      }, 10);
+    }
   }, [timer]);
 
-  //stop the water
-  useEffect(() => {
-    console.log('waterflow', waterFlow);
-    // Handle changes to the waterFlow prop
-    if (waterFlow) {
-      setIsFinalState(true);
-    }
-  }, [waterFlow]);
+  const rows = LEVEL_SETTINGS[level].initial_rows;
 
   return (
     <div
@@ -40,7 +34,9 @@ const Timer: React.FC<TimerProps> = ({ rows, timer, waterFlow }) => {
         className={`${styles.innertimer} ${
           isFinalState ? styles.finalState : ''
         }`}
-        style={{ animationDuration: `${timer}ms` }}
+        style={{
+          animationDuration: `${LEVEL_SETTINGS[level].initial_timer}ms`,
+        }}
       ></div>
       <div className={styles.tileHolder}>
         {[...Array(rows)].map((box, index) => (

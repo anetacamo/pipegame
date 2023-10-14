@@ -73,7 +73,6 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
     }
     setSubmit(true);
   };
-  console.log(isScoreLegendary());
 
   return (
     <div
@@ -82,26 +81,30 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
         height: rows * FIELD_IN_PX + BORDER * 2,
       }}
     >
-      <h3>TABLE OF LEGENDS</h3>
-      {scores.map((s: any) => (
-        <p>
-          {s.name}: {s.score}
-        </p>
-      ))}
-      <br />
-      {(gameOver || gameWon) && isScoreLegendary() && !submit && (
-        <>
-          <p>
-            WOW! No way. You made new record!
-            <br />
-            fill your nickname bellow
+      <>
+        <h3>TABLE OF LEGENDS</h3>
+        {scores.map((s: any) => (
+          <p key={s.id}>
+            {s.name}: {s.score}
           </p>
-          <p>your score:{score}</p>
-          <input max={16} placeholder='your name' ref={inputName} />
-          <button onClick={() => setUserAndCreateScore()}>submit score</button>
-        </>
-      )}
-      {submit && <p>thanks! refresh to see the updated table</p>}
+        ))}
+        <br />
+        {(gameOver || gameWon) && isScoreLegendary() && !submit && (
+          <>
+            <p>
+              WOW! No way. You made new record!
+              <br />
+              fill your nickname bellow
+            </p>
+            <p>your score:{score}</p>
+            <input max={16} placeholder='your name' ref={inputName} />
+            <button onClick={() => setUserAndCreateScore()}>
+              submit score
+            </button>
+          </>
+        )}
+        {submit && <p>thanks! refresh to see the updated table</p>}
+      </>
     </div>
   );
 };

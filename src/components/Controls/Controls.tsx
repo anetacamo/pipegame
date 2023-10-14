@@ -1,48 +1,57 @@
 import React from 'react';
+import styles from './Controls.module.scss';
 
 interface ControlsProps {
   newGameHandler: () => void;
-  waterFlow: boolean;
   gameWon: boolean;
   levelDone: boolean;
+  setTimer: (value: boolean) => void;
   newLevelHandler: () => void;
   setWaterFlow: (value: boolean) => void;
-  buttonNextLevelRef?: any;
-  buttonNewGameRef?: any;
+  buttonNextLevel: React.RefObject<HTMLButtonElement>;
+  buttonNewGame: React.RefObject<HTMLButtonElement>;
   text?: string;
+  timer: boolean;
 }
 
 const Controls: React.FC<ControlsProps> = ({
   newGameHandler,
-  waterFlow,
   levelDone,
+  timer,
   newLevelHandler,
-  buttonNextLevelRef,
-  buttonNewGameRef,
+  buttonNextLevel,
+  buttonNewGame,
   setWaterFlow,
+  setTimer,
   gameWon,
   text,
 }) => {
   return (
     <div>
       <div className='flex'>
-        <button onClick={newGameHandler} ref={buttonNewGameRef}>
-          New Game
-        </button>
-        {!waterFlow && (
-          <button onClick={() => setWaterFlow(true)}>
+        {timer && (
+          <button
+            onClick={() => {
+              setWaterFlow(true);
+              setTimer(false);
+            }}
+          >
             Let the water flow!
           </button>
         )}
       </div>
-
       {levelDone && !gameWon && (
-        <button onClick={newLevelHandler} ref={buttonNextLevelRef}>
+        <button onClick={newLevelHandler} ref={buttonNextLevel}>
           Next Level
         </button>
       )}
       {text && (
-        <p style={{ whiteSpace: 'pre-line', position: 'absolute' }}>{text}</p>
+        <div className={styles.info}>
+          <p>{text}</p>
+          <button onClick={newGameHandler} ref={buttonNewGame}>
+            New Game
+          </button>
+        </div>
       )}
     </div>
   );

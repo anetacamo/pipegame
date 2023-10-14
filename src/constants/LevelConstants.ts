@@ -17,7 +17,7 @@ export const LEVEL_SETTINGS = [
     initial_timer: 28000,
     initial_speed: 2000,
     text:
-      'welcome & Watch out! This game is for desktop only.\n Move on the field by the arrows up, right, down and left. Press spacebar to place a pipe tile.\n You can see upcoming tiles on the left. Timer on the right.\n When times runs out, water will flow from top left pipe.',
+      'if you manage to lead the water to the end pipe, youll get 100 points.',
     initial_body: {
       '0,0': 10,
       '5,5': 12,
@@ -29,7 +29,7 @@ export const LEVEL_SETTINGS = [
     initial_timer: 26000,
     initial_speed: 1500,
     text:
-      'If you use three cross tiles in one game you will get extra points in the future.',
+      'Using a cross gives you 30 points, run through it again and double that.',
     initial_body: { '0,0': 10, '5,5': 12, '3,3': 0, '1,4': 0, '4,2': 0 },
   },
   {
@@ -37,7 +37,7 @@ export const LEVEL_SETTINGS = [
     initial_location: [0, 0],
     initial_timer: 24000,
     initial_speed: 1500,
-    text: 'If you encounter suspisious behaviour, refresh!',
+    text: 'This game has 5 levels',
     initial_body: { '0,0': 10, '5,2': 7, '1,3': 8, '6,6': 12 },
   },
   {
@@ -46,7 +46,7 @@ export const LEVEL_SETTINGS = [
     initial_timer: 22000,
     initial_speed: 1500,
     text:
-      'spacebar to place a pipe tile. You can see upcoming tiles on the left.',
+      'If you score more then the last person on the board, youll replace them.',
     initial_body: {
       '0,0': 10,
       '5,2': 7,
@@ -65,5 +65,4 @@ export const LEVEL_SETTINGS = [
       'spacebar to place a pipe tile. You can see upcoming tiles on the left.',
     initial_body: { '0,0': 10, '5,2': 7, '1,3': 8, '6,6': 12 },
   },
-  // Add settings for other levels here
 ];
