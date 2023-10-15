@@ -5,7 +5,12 @@ import Header from '../components/Header/Header';
 import ScoreBoard from '../components/ScoreBoard/ScoreBoard';
 import Suggestions from '../components/Suggestions/Suggestions';
 import Timer from '../components/Timer/Timer';
-import { LEVEL, SCORE, moveDirections } from '../constants/GameConstants';
+import {
+  LEVEL,
+  SCORE,
+  moveDirections,
+  LOCATION,
+} from '../constants/GameConstants';
 import { LEVEL_SETTINGS } from '../constants/LevelConstants';
 import {
   CONSTANT,
@@ -29,31 +34,30 @@ function PipeGame() {
   const buttonNewGame = useRef<HTMLButtonElement>(null);
   const buttonNextLevel = useRef<HTMLButtonElement>(null);
 
-  const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(SCORE);
   const [level, setLevel] = useState(LEVEL);
 
   const {
     initial_body,
-    initial_location,
     initial_timer,
     initial_speed,
     initial_rows,
-    text,
   } = LEVEL_SETTINGS[level];
 
   const [upcomingFields, setUpcomingFields] = useState(
     generateXOfRandomPipeCodes(level)
   );
-  const [headLocation, setHeadLocation] = useState(initial_location);
+  const [headLocation, setHeadLocation] = useState(LOCATION);
   const [body, setBody] = useState<PipeGameTypes['body']>(initial_body);
   const [waterFlow, setWaterFlow] = useState(false);
   const [waterBody, setWaterBody] = useState<any>([]);
-  const [waterHead, setWaterHead] = useState(initial_location);
+  const [waterHead, setWaterHead] = useState(LOCATION);
   const [timer, setTimer] = useState(true);
-  const [levelDone, setLevelDone] = useState(false);
   const [waterDirection, setWaterDirection] = useState(0);
+  const [levelDone, setLevelDone] = useState(false);
   const [gameWon, setGameWon] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [speed, setSpeed] = useState(initial_speed);
 
   const handleKeyPress = useCallback(
     (key: string) => {
@@ -69,27 +73,30 @@ function PipeGame() {
   useKeyboardInput(handleKeyPress);
 
   useEffect(() => {
-    if (!gameOver && waterFlow && !levelDone) {
+    if (waterFlow) {
       const interval = setInterval(() => {
         checkNextTile();
         setScore((prevScore) => prevScore + 10);
-      }, initial_speed);
+        console.log(speed);
+      }, speed);
+      setSpeed(initial_speed);
       return () => {
         clearInterval(interval);
       };
     }
-  }, [waterHead, waterFlow, gameOver, levelDone]);
+  }, [waterHead, waterFlow]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setWaterFlow(true);
-      setTimer(false);
-    }, initial_timer);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [level]);
+    if (timer === true) {
+      const interval = setInterval(() => {
+        setWaterFlow(true);
+        setTimer(false);
+      }, initial_timer);
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [timer]);
 
   const moveHead = useCallback(
     (direction: number) => {
@@ -107,7 +114,8 @@ function PipeGame() {
       if (newLocation !== null) {
         setWaterHead(newLocation);
       } else {
-        onCollision();
+        //the water reached the wall
+        onFinish();
       }
     },
     [waterHead]
@@ -124,10 +132,9 @@ function PipeGame() {
   };
 
   const resetGame = (newLevel: number) => {
-    setHeadLocation(LEVEL_SETTINGS[newLevel].initial_location);
-    setWaterHead(LEVEL_SETTINGS[newLevel].initial_location);
+    setHeadLocation(LOCATION);
+    setWaterHead(LOCATION);
     setBody(LEVEL_SETTINGS[newLevel].initial_body);
-    setWaterFlow(false);
     setWaterBody([]);
     setTimer(true);
     setLevelDone(false);
@@ -151,7 +158,7 @@ function PipeGame() {
     resetGame(newLevel);
   };
 
-  const onCollision = () => {
+  const onFinish = () => {
     setWaterFlow(false);
     if (Object.values(waterBody).length > 5) {
       setLevelDone(true);
@@ -163,6 +170,7 @@ function PipeGame() {
 
   const checkNextTile = () => {
     //is waterflow inside the pipes?
+    console.log('check next tile');
     if (waterHead.toString() in body) {
       //get the code
       const pipeCode = Number(body[waterHead.toString()]);
@@ -170,16 +178,17 @@ function PipeGame() {
       let exitDirection = 0;
       if (TANK_PIPE.includes(pipeCode)) {
         // wait for few extra seconds
+        console.log('tank pipe' + speed);
+        setSpeed(5000);
       }
       if (END_PIPES.includes(pipeCode)) {
         //entry piece
-
         if (Object.values(waterBody).length < 1) {
           exitDirection = pipeString.indexOf('0');
         } else {
           setScore(score + 90);
           setWaterBody([...waterBody, waterHead?.toString()]);
-          onCollision();
+          onFinish();
           return;
         }
       }
@@ -203,7 +212,7 @@ function PipeGame() {
       setWaterBody([...waterBody, waterHead?.toString()]);
       moveWaterHead(exitDirection);
     } else {
-      onCollision();
+      onFinish();
     }
   };
 
@@ -227,16 +236,16 @@ function PipeGame() {
           <Controls
             {...{
               newGameHandler,
-              gameOver,
+              newLevelHandler,
               buttonNextLevel,
               buttonNewGame,
               levelDone,
-              newLevelHandler,
+              gameOver,
+              gameWon,
               setWaterFlow,
               setTimer,
               timer,
-              gameWon,
-              text,
+              level,
             }}
           />
         </div>

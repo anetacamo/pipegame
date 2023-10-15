@@ -12,6 +12,7 @@ const Timer: React.FC<TimerProps> = ({ timer, level }) => {
   const [isFinalState, setIsFinalState] = useState(false);
 
   useEffect(() => {
+    console.log('timer', timer);
     setIsFinalState(true);
     if (timer === true) {
       setTimeout(() => {

@@ -31,12 +31,15 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
 }) => {
   const [scores, setScores] = useState<Score[]>([]);
   const [submit, setSubmit] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const inputName = useRef<HTMLInputElement | null>(null);
   const scoresCollectionRef = collection(db, 'scores');
 
   const isScoreLegendary = () => {
     return scores.some((s) => s.score && s.score < score);
   };
+
+  console.log(scores);
 
   useEffect(() => {
     const fetchScores = async () => {
@@ -52,20 +55,27 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
 
   const createScore = async (userName: string) => {
     await addDoc(scoresCollectionRef, { name: userName, score: score });
+    const updatedScores = [
+      ...scores,
+      { name: userName, score: score, id: '1' },
+    ];
+    setScores(updatedScores);
   };
 
   const deleteScore = async (id: string) => {
     const userDoc = doc(db, 'scores', id);
     await deleteDoc(userDoc);
+    const updatedScores = scores.filter((s) => s.id === id);
+    setScores(updatedScores);
   };
 
   const setUserAndCreateScore = async () => {
     const newUser = inputName.current?.value;
-    if (scores.length > 10) {
+    if (scores.length > 9) {
       const smallestScore = scores.reduce((min, score) => {
         const scoreValue = score.score;
         return scoreValue !== undefined && scoreValue < min ? scoreValue : min;
-      }, scores[0].id || 0); // Provide an initial value for 'min'
+      }, scores[0].id || 0);
       deleteScore(smallestScore as string);
     }
     if (newUser) {
@@ -83,27 +93,33 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
     >
       <>
         <h3>TABLE OF LEGENDS</h3>
-        {scores.map((s: any) => (
-          <p key={s.id}>
-            {s.name}: {s.score}
-          </p>
-        ))}
+        {scores
+          .sort((a, b) => (a.score && b.score ? b.score - a.score : 0))
+          .map((s: any) => (
+            <p key={s.id}>
+              {s.name}: {s.score}
+            </p>
+          ))}
         <br />
         {(gameOver || gameWon) && isScoreLegendary() && !submit && (
           <>
             <p>
-              WOW! No way. You made new record!
+              You made new record!
               <br />
               fill your nickname bellow
             </p>
-            <p>your score:{score}</p>
+            <p>your score: {score}</p>
             <input max={16} placeholder='your name' ref={inputName} />
-            <button onClick={() => setUserAndCreateScore()}>
-              submit score
-            </button>
+            {isLoading ? (
+              <button disabled>loading</button>
+            ) : (
+              <button onClick={() => setUserAndCreateScore()}>
+                submit score
+              </button>
+            )}
           </>
         )}
-        {submit && <p>thanks! refresh to see the updated table</p>}
+        {submit && <p>thanks!</p>}
       </>
     </div>
   );

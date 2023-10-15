@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './Controls.module.scss';
+import { LEVEL_SETTINGS } from '../../constants/LevelConstants';
 
 interface ControlsProps {
   newGameHandler: () => void;
@@ -10,7 +11,7 @@ interface ControlsProps {
   setWaterFlow: (value: boolean) => void;
   buttonNextLevel: React.RefObject<HTMLButtonElement>;
   buttonNewGame: React.RefObject<HTMLButtonElement>;
-  text?: string;
+  level: number;
   timer: boolean;
 }
 
@@ -24,7 +25,7 @@ const Controls: React.FC<ControlsProps> = ({
   setWaterFlow,
   setTimer,
   gameWon,
-  text,
+  level,
 }) => {
   return (
     <div>
@@ -45,14 +46,12 @@ const Controls: React.FC<ControlsProps> = ({
           Next Level
         </button>
       )}
-      {text && (
-        <div className={styles.info}>
-          <p>{text}</p>
-          <button onClick={newGameHandler} ref={buttonNewGame}>
-            New Game
-          </button>
-        </div>
-      )}
+      <div className={styles.info}>
+        <p>{LEVEL_SETTINGS[level].text}</p>
+        <button onClick={newGameHandler} ref={buttonNewGame}>
+          New Game
+        </button>
+      </div>
     </div>
   );
 };
