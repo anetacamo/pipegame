@@ -7,7 +7,7 @@ interface DesktopProps {
   rows: number;
   headLocation: number[];
   body: PipeGameTypes['body'];
-  waterBody: string[];
+  waterBody: PipeGameTypes['waterBody'];
   gameOver: boolean;
   gameWon: boolean;
   levelDone: boolean;

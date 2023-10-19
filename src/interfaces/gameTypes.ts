@@ -2,7 +2,7 @@ export interface PipeGameTypes {
   body: Body;
   gameOver: boolean;
   gameWon: boolean;
-  headLocation: Location;
+  headLocation: number[];
   level: number;
   levelDone: boolean;
   rows: number;
@@ -10,17 +10,12 @@ export interface PipeGameTypes {
   tileCode: Record<string, string>;
   timer: number;
   upcomingFields: number[];
-  waterBody: [number, number][];
+  waterBody: string[];
   waterDirection: string;
   waterFlow: boolean;
-  waterHead: Location;
+  waterHead: number[];
 }
 
 interface Body {
   [key: string]: number | undefined;
-}
-
-interface Location {
-  x: number;
-  y: number;
 }

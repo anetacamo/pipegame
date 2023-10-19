@@ -1,14 +1,17 @@
 import React from 'react';
 import styles from './Controls.module.scss';
 import { LEVEL_SETTINGS } from '../../constants/LevelConstants';
+import { switchWaterOn } from '../../store/features/water';
+import { RootState } from '../../store/store';
+import { useSelector, useDispatch } from 'react-redux';
 
 interface ControlsProps {
   newGameHandler: () => void;
   gameWon: boolean;
   levelDone: boolean;
   setTimer: (value: boolean) => void;
+  setSpeedUp: (value: boolean) => void;
   newLevelHandler: () => void;
-  setWaterFlow: (value: boolean) => void;
   buttonNextLevel: React.RefObject<HTMLButtonElement>;
   buttonNewGame: React.RefObject<HTMLButtonElement>;
   level: number;
@@ -22,23 +25,28 @@ const Controls: React.FC<ControlsProps> = ({
   newLevelHandler,
   buttonNextLevel,
   buttonNewGame,
-  setWaterFlow,
   setTimer,
   gameWon,
   level,
+  setSpeedUp,
 }) => {
+  const water = useSelector((state: RootState) => state.water.water);
+  const dispatch = useDispatch();
   return (
     <div>
       <div className='flex'>
         {timer && (
           <button
             onClick={() => {
-              setWaterFlow(true);
+              dispatch(switchWaterOn());
               setTimer(false);
             }}
           >
             Let the water flow!
           </button>
+        )}
+        {water && (
+          <button onClick={() => setSpeedUp(true)}>Speed up water!</button>
         )}
       </div>
       {levelDone && !gameWon && (

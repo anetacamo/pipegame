@@ -12,6 +12,8 @@
 - BUG: score added also on a non-matching or non-existing tile one time
 - disable interaction with the board on game lost
 - on let the water flow speedup the water too
+- in the corner write the version of the game
+- BUG: spped up button reacts quite late
 
 ### DONE!
 
@@ -43,3 +45,14 @@
 - added bonus level
 - refresh page after score submit
 - order scores
+
+  17.10.23
+
+- game won when reached last level dynamically
+- bug: it removes the top score
+- bug: temporarily slow down
+
+  19.10.23
+
+- added redux toolkit
+- speed up water & slow down on tank type

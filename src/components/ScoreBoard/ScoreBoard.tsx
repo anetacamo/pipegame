@@ -31,15 +31,12 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
 }) => {
   const [scores, setScores] = useState<Score[]>([]);
   const [submit, setSubmit] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const inputName = useRef<HTMLInputElement | null>(null);
   const scoresCollectionRef = collection(db, 'scores');
 
   const isScoreLegendary = () => {
     return scores.some((s) => s.score && s.score < score);
   };
-
-  console.log(scores);
 
   useEffect(() => {
     const fetchScores = async () => {
@@ -53,11 +50,40 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
     fetchScores();
   }, []);
 
+  // useEffect(() => {
+  //   console.log('fetch from my server');
+  //   fetch('http://localhost:5000/api').then((response) =>
+  //     response.json().then((data) => {
+  //       setBackend(data);
+  //     })
+  //   );
+  // }, []);
+
+  // const replaceScore = async () => {
+  //   const scoreObject: Record<string, number> = {};
+  //   scores.forEach((sc) => {
+  //     if (sc.name && sc.score) {
+  //       scoreObject[sc.name] = sc.score;
+  //     }
+  //   });
+
+  //   console.log(scoreObject);
+  // fetch('http://localhost:5000/api', {
+  //   method: 'PUT',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify(scoreObject),
+  // })
+  //   .then((response) => response.json())
+  //   .then((data) => console.log(data));
+  // };
+
   const createScore = async (userName: string) => {
     await addDoc(scoresCollectionRef, { name: userName, score: score });
     const updatedScores = [
       ...scores,
-      { name: userName, score: score, id: '1' },
+      { name: userName, score: score, id: scores[scores.length - 1].id },
     ];
     setScores(updatedScores);
   };
@@ -71,12 +97,13 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
 
   const setUserAndCreateScore = async () => {
     const newUser = inputName.current?.value;
+
     if (scores.length > 9) {
       const smallestScore = scores.reduce((min, score) => {
         const scoreValue = score.score;
         return scoreValue !== undefined && scoreValue < min ? scoreValue : min;
-      }, scores[0].id || 0);
-      deleteScore(smallestScore as string);
+      }, scores[scores.length - 1].id || 0);
+      await deleteScore(smallestScore as string);
     }
     if (newUser) {
       await createScore(newUser);
@@ -101,6 +128,12 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
             </p>
           ))}
         <br />
+        {/* <button onClick={replaceScore}>update the scores</button>
+        {Object.keys(backend).map((key, value) => (
+          <p>
+            {key}: {value}
+          </p>
+        ))} */}
         {(gameOver || gameWon) && isScoreLegendary() && !submit && (
           <>
             <p>
@@ -110,13 +143,10 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
             </p>
             <p>your score: {score}</p>
             <input max={16} placeholder='your name' ref={inputName} />
-            {isLoading ? (
-              <button disabled>loading</button>
-            ) : (
-              <button onClick={() => setUserAndCreateScore()}>
-                submit score
-              </button>
-            )}
+
+            <button onClick={() => setUserAndCreateScore()}>
+              submit score
+            </button>
           </>
         )}
         {submit && <p>thanks!</p>}

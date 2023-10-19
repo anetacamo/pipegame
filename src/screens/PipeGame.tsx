@@ -7,9 +7,9 @@ import Suggestions from '../components/Suggestions/Suggestions';
 import Timer from '../components/Timer/Timer';
 import {
   LEVEL,
-  SCORE,
-  moveDirections,
   LOCATION,
+  moveDirections,
+  SCORE,
 } from '../constants/GameConstants';
 import { LEVEL_SETTINGS } from '../constants/LevelConstants';
 import {
@@ -21,14 +21,17 @@ import {
   WATERFLOW,
 } from '../constants/tileCodes';
 import { PipeGameTypes } from '../interfaces/gameTypes';
+import { useSelector, useDispatch } from 'react-redux';
+import { switchWaterOn, switchWaterOff } from '../store/features/water';
 import {
   exitValueToEntry,
   findOutputIndex,
-  randomPipe,
   generateXOfRandomPipeCodes,
+  randomPipe,
 } from '../utils/gameUtils';
 import moveOnGrid from '../utils/moveOnGrid';
 import useKeyboardInput from '../utils/useKeyboardInput';
+import { RootState } from '../store/store';
 
 function PipeGame() {
   const buttonNewGame = useRef<HTMLButtonElement>(null);
@@ -49,15 +52,22 @@ function PipeGame() {
   );
   const [headLocation, setHeadLocation] = useState(LOCATION);
   const [body, setBody] = useState<PipeGameTypes['body']>(initial_body);
-  const [waterFlow, setWaterFlow] = useState(false);
-  const [waterBody, setWaterBody] = useState<any>([]);
-  const [waterHead, setWaterHead] = useState(LOCATION);
+  const [waterBody, setWaterBody] = useState<PipeGameTypes['waterBody']>([]);
+  const [waterHead, setWaterHead] = useState<PipeGameTypes['waterHead']>(
+    LOCATION
+  );
   const [timer, setTimer] = useState(true);
   const [waterDirection, setWaterDirection] = useState(0);
   const [levelDone, setLevelDone] = useState(false);
   const [gameWon, setGameWon] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [speed, setSpeed] = useState(initial_speed);
+  const [speedUp, setSpeedUp] = useState(false);
+
+  const water = useSelector((state: RootState) => state.water.water);
+  const dispatch = useDispatch();
+
+  console.log('redux', water);
 
   const handleKeyPress = useCallback(
     (key: string) => {
@@ -73,23 +83,25 @@ function PipeGame() {
   useKeyboardInput(handleKeyPress);
 
   useEffect(() => {
-    if (waterFlow) {
+    if (water === true) {
       const interval = setInterval(() => {
         checkNextTile();
         setScore((prevScore) => prevScore + 10);
-        console.log(speed);
       }, speed);
-      setSpeed(initial_speed);
+      speedUp ? setSpeed(250) : setSpeed(initial_speed);
       return () => {
         clearInterval(interval);
       };
     }
-  }, [waterHead, waterFlow]);
+  }, [waterHead, water]);
 
   useEffect(() => {
+    console.log('dispatch before');
     if (timer === true) {
       const interval = setInterval(() => {
-        setWaterFlow(true);
+        console.log('dispatch after');
+        //        setWaterFlow(true);
+        dispatch(switchWaterOn());
         setTimer(false);
       }, initial_timer);
       return () => {
@@ -137,6 +149,8 @@ function PipeGame() {
     setBody(LEVEL_SETTINGS[newLevel].initial_body);
     setWaterBody([]);
     setTimer(true);
+    setSpeed(LEVEL_SETTINGS[newLevel].initial_speed);
+    setSpeedUp(false);
     setLevelDone(false);
     setWaterDirection(0);
     setUpcomingFields(generateXOfRandomPipeCodes(newLevel));
@@ -159,10 +173,12 @@ function PipeGame() {
   };
 
   const onFinish = () => {
-    setWaterFlow(false);
+    //    setWaterFlow(false);
+    dispatch(switchWaterOff());
+
     if (Object.values(waterBody).length > 5) {
       setLevelDone(true);
-      level === 5 && setGameWon(true);
+      level === LEVEL_SETTINGS.length - 1 && setGameWon(true);
     } else {
       setGameOver(true);
     }
@@ -170,7 +186,7 @@ function PipeGame() {
 
   const checkNextTile = () => {
     //is waterflow inside the pipes?
-    console.log('check next tile');
+
     if (waterHead.toString() in body) {
       //get the code
       const pipeCode = Number(body[waterHead.toString()]);
@@ -178,8 +194,10 @@ function PipeGame() {
       let exitDirection = 0;
       if (TANK_PIPE.includes(pipeCode)) {
         // wait for few extra seconds
-        console.log('tank pipe' + speed);
-        setSpeed(5000);
+
+        if (speedUp === false) {
+          setSpeed(5000);
+        }
       }
       if (END_PIPES.includes(pipeCode)) {
         //entry piece
@@ -242,10 +260,12 @@ function PipeGame() {
               levelDone,
               gameOver,
               gameWon,
-              setWaterFlow,
+              //              setWaterFlow,
               setTimer,
               timer,
               level,
+              //              waterFlow,
+              setSpeedUp,
             }}
           />
         </div>
