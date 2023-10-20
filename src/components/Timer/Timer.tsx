@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import styles from './Timer.module.scss';
 import { FIELD_IN_PX, BORDER } from '../../constants/GameConstants';
 import { LEVEL_SETTINGS } from '../../constants/LevelConstants';
+import { useAppSelector } from '../../utils/reduxHooks';
 
 interface TimerProps {
-  timer: boolean;
   level: number;
 }
 
-const Timer: React.FC<TimerProps> = ({ timer, level }) => {
+const Timer: React.FC<TimerProps> = ({ level }) => {
   const [isFinalState, setIsFinalState] = useState(false);
+
+  const timer = useAppSelector((state) => state.water.timer);
 
   useEffect(() => {
     setIsFinalState(true);

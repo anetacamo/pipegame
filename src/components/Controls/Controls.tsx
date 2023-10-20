@@ -1,37 +1,33 @@
 import React from 'react';
 import styles from './Controls.module.scss';
 import { LEVEL_SETTINGS } from '../../constants/LevelConstants';
-import { switchWaterOn } from '../../store/features/water';
-import { RootState } from '../../store/store';
-import { useSelector, useDispatch } from 'react-redux';
+import {
+  switchWaterOn,
+  speedUpWater,
+  switchTimerOff,
+} from '../../store/features/water';
+import { useAppDispatch, useAppSelector } from '../../utils/reduxHooks';
 
 interface ControlsProps {
   newGameHandler: () => void;
-  gameWon: boolean;
-  levelDone: boolean;
-  setTimer: (value: boolean) => void;
-  setSpeedUp: (value: boolean) => void;
   newLevelHandler: () => void;
   buttonNextLevel: React.RefObject<HTMLButtonElement>;
   buttonNewGame: React.RefObject<HTMLButtonElement>;
   level: number;
-  timer: boolean;
 }
 
 const Controls: React.FC<ControlsProps> = ({
   newGameHandler,
-  levelDone,
-  timer,
   newLevelHandler,
   buttonNextLevel,
   buttonNewGame,
-  setTimer,
-  gameWon,
   level,
-  setSpeedUp,
 }) => {
-  const water = useSelector((state: RootState) => state.water.water);
-  const dispatch = useDispatch();
+  const { water, gameOver, gameWon, timer, levelDone } = useAppSelector(
+    (state) => state.water
+  );
+  const dispatch = useAppDispatch();
+
   return (
     <div>
       <div className='flex'>
@@ -39,17 +35,17 @@ const Controls: React.FC<ControlsProps> = ({
           <button
             onClick={() => {
               dispatch(switchWaterOn());
-              setTimer(false);
+              dispatch(switchTimerOff());
             }}
           >
-            Let the water flow!
+            Turn the water on!
           </button>
         )}
         {water && (
-          <button onClick={() => setSpeedUp(true)}>Speed up water!</button>
+          <button onClick={() => dispatch(speedUpWater())}>Speed up!</button>
         )}
       </div>
-      {levelDone && !gameWon && (
+      {levelDone && !gameWon && !gameOver && (
         <button onClick={newLevelHandler} ref={buttonNextLevel}>
           Next Level
         </button>

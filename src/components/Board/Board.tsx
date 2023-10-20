@@ -2,15 +2,13 @@ import React from 'react';
 import { PipeGameTypes } from '../../interfaces/gameTypes';
 import styles from './Board.module.scss';
 import { FIELD_IN_PX, BORDER } from '../../constants/GameConstants';
+import { useAppSelector } from '../../utils/reduxHooks';
 
 interface DesktopProps {
   rows: number;
   headLocation: number[];
   body: PipeGameTypes['body'];
   waterBody: PipeGameTypes['waterBody'];
-  gameOver: boolean;
-  gameWon: boolean;
-  levelDone: boolean;
 }
 
 const Desktop: React.FC<DesktopProps> = ({
@@ -18,11 +16,12 @@ const Desktop: React.FC<DesktopProps> = ({
   headLocation,
   body,
   waterBody,
-  gameOver,
-  gameWon,
-  levelDone,
 }) => {
   let message = '';
+
+  const gameWon = useAppSelector((state) => state.water.gameWon);
+  const levelDone = useAppSelector((state) => state.water.levelDone);
+  const gameOver = useAppSelector((state) => state.water.gameOver);
 
   const convertMessage = (message: string) => {
     return message

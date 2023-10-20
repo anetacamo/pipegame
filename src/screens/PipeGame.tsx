@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../utils/reduxHooks';
 import Board from '../components/Board/Board';
 import Controls from '../components/Controls/Controls';
 import Header from '../components/Header/Header';
@@ -21,8 +22,12 @@ import {
   WATERFLOW,
 } from '../constants/tileCodes';
 import { PipeGameTypes } from '../interfaces/gameTypes';
-import { useSelector, useDispatch } from 'react-redux';
-import { switchWaterOn, switchWaterOff } from '../store/features/water';
+import {
+  switchWaterOn,
+  levelFinished,
+  levelStarted,
+  switchTimerOff,
+} from '../store/features/water';
 import {
   exitValueToEntry,
   findOutputIndex,
@@ -31,43 +36,37 @@ import {
 } from '../utils/gameUtils';
 import moveOnGrid from '../utils/moveOnGrid';
 import useKeyboardInput from '../utils/useKeyboardInput';
-import { RootState } from '../store/store';
 
 function PipeGame() {
   const buttonNewGame = useRef<HTMLButtonElement>(null);
   const buttonNextLevel = useRef<HTMLButtonElement>(null);
 
+  //dont reset on new level
   const [score, setScore] = useState(SCORE);
   const [level, setLevel] = useState(LEVEL);
 
-  const {
-    initial_body,
-    initial_timer,
-    initial_speed,
-    initial_rows,
-  } = LEVEL_SETTINGS[level];
-
+  //reset on new level by level dynamically:
+  const [speed, setSpeed] = useState(LEVEL_SETTINGS[level].initial_speed);
   const [upcomingFields, setUpcomingFields] = useState(
     generateXOfRandomPipeCodes(level)
   );
+  const [body, setBody] = useState<PipeGameTypes['body']>(
+    LEVEL_SETTINGS[level].initial_body
+  );
+
+  //reset always to the same value
   const [headLocation, setHeadLocation] = useState(LOCATION);
-  const [body, setBody] = useState<PipeGameTypes['body']>(initial_body);
   const [waterBody, setWaterBody] = useState<PipeGameTypes['waterBody']>([]);
   const [waterHead, setWaterHead] = useState<PipeGameTypes['waterHead']>(
     LOCATION
   );
-  const [timer, setTimer] = useState(true);
   const [waterDirection, setWaterDirection] = useState(0);
-  const [levelDone, setLevelDone] = useState(false);
-  const [gameWon, setGameWon] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
-  const [speed, setSpeed] = useState(initial_speed);
-  const [speedUp, setSpeedUp] = useState(false);
 
-  const water = useSelector((state: RootState) => state.water.water);
-  const dispatch = useDispatch();
+  //dispatch values
+  const { speedUp, water, timer } = useAppSelector((state) => state.water);
+  const dispatch = useAppDispatch();
 
-  console.log('redux', water);
+  const { initial_timer, initial_speed, initial_rows } = LEVEL_SETTINGS[level];
 
   const handleKeyPress = useCallback(
     (key: string) => {
@@ -80,6 +79,7 @@ function PipeGame() {
     },
     [headLocation, body]
   );
+
   useKeyboardInput(handleKeyPress);
 
   useEffect(() => {
@@ -96,13 +96,10 @@ function PipeGame() {
   }, [waterHead, water]);
 
   useEffect(() => {
-    console.log('dispatch before');
     if (timer === true) {
       const interval = setInterval(() => {
-        console.log('dispatch after');
-        //        setWaterFlow(true);
         dispatch(switchWaterOn());
-        setTimer(false);
+        dispatch(switchTimerOff());
       }, initial_timer);
       return () => {
         clearInterval(interval);
@@ -148,10 +145,8 @@ function PipeGame() {
     setWaterHead(LOCATION);
     setBody(LEVEL_SETTINGS[newLevel].initial_body);
     setWaterBody([]);
-    setTimer(true);
     setSpeed(LEVEL_SETTINGS[newLevel].initial_speed);
-    setSpeedUp(false);
-    setLevelDone(false);
+    dispatch(levelStarted());
     setWaterDirection(0);
     setUpcomingFields(generateXOfRandomPipeCodes(newLevel));
   };
@@ -161,8 +156,6 @@ function PipeGame() {
     resetGame(1);
     setScore(SCORE);
     setLevel(LEVEL);
-    setGameOver(false);
-    setGameWon(false);
   };
 
   const newLevelHandler = () => {
@@ -173,20 +166,11 @@ function PipeGame() {
   };
 
   const onFinish = () => {
-    //    setWaterFlow(false);
-    dispatch(switchWaterOff());
-
-    if (Object.values(waterBody).length > 5) {
-      setLevelDone(true);
-      level === LEVEL_SETTINGS.length - 1 && setGameWon(true);
-    } else {
-      setGameOver(true);
-    }
+    dispatch(levelFinished({ level, waterBody }));
   };
 
   const checkNextTile = () => {
     //is waterflow inside the pipes?
-
     if (waterHead.toString() in body) {
       //get the code
       const pipeCode = Number(body[waterHead.toString()]);
@@ -194,7 +178,6 @@ function PipeGame() {
       let exitDirection = 0;
       if (TANK_PIPE.includes(pipeCode)) {
         // wait for few extra seconds
-
         if (speedUp === false) {
           setSpeed(5000);
         }
@@ -246,9 +229,6 @@ function PipeGame() {
               headLocation,
               body,
               waterBody,
-              gameOver,
-              gameWon,
-              levelDone,
             }}
           />
           <Controls
@@ -257,29 +237,15 @@ function PipeGame() {
               newLevelHandler,
               buttonNextLevel,
               buttonNewGame,
-              levelDone,
-              gameOver,
-              gameWon,
-              //              setWaterFlow,
-              setTimer,
-              timer,
               level,
-              //              waterFlow,
-              setSpeedUp,
             }}
           />
         </div>
-        <Timer timer={timer} level={level} />
-        <ScoreBoard
-          score={score}
-          gameOver={gameOver}
-          rows={initial_rows}
-          gameWon={gameWon}
-        />
+        <Timer level={level} />
+        <ScoreBoard score={score} level={level} />
       </div>
     </div>
   );
 }
 export default PipeGame;
-
-//423
+//423, 279, 251
