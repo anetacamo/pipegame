@@ -1,21 +1,16 @@
 import {
-  collection,
-  getDocs,
   addDoc,
-  doc,
+  collection,
   deleteDoc,
+  doc,
+  getDocs,
 } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
-import db from '../../firebase-config';
-import styles from './ScoreBoard.module.scss';
-import { FIELD_IN_PX, BORDER } from '../../constants/GameConstants';
-import { useAppSelector } from '../../utils/reduxHooks';
+import { BORDER, FIELD_IN_PX } from '../../constants/GameConstants';
 import { LEVEL_SETTINGS } from '../../constants/LevelConstants';
-
-interface ScoreBoardProps {
-  score: number;
-  level: number;
-}
+import db from '../../firebase-config';
+import { useAppSelector } from '../../utils/reduxHooks';
+import styles from './ScoreBoard.module.scss';
 
 type Score = {
   name?: string;
@@ -23,14 +18,15 @@ type Score = {
   id: string;
 };
 
-const ScoreBoard: React.FC<ScoreBoardProps> = ({ score, level }) => {
+const ScoreBoard: React.FC = () => {
   const [scores, setScores] = useState<Score[]>([]);
   const [submit, setSubmit] = useState<boolean>(false);
   const inputName = useRef<HTMLInputElement | null>(null);
   const scoresCollectionRef = collection(db, 'scores');
 
-  const gameWon = useAppSelector((state) => state.water.gameWon);
-  const gameOver = useAppSelector((state) => state.water.gameOver);
+  const { gameWon, level, gameOver, score } = useAppSelector(
+    (state) => state.water
+  );
 
   const isScoreLegendary = () => {
     return scores.some((s) => s.score && s.score < score);

@@ -4,14 +4,10 @@ import { FIELD_IN_PX, BORDER } from '../../constants/GameConstants';
 import { LEVEL_SETTINGS } from '../../constants/LevelConstants';
 import { useAppSelector } from '../../utils/reduxHooks';
 
-interface TimerProps {
-  level: number;
-}
-
-const Timer: React.FC<TimerProps> = ({ level }) => {
+const Timer: React.FC = () => {
   const [isFinalState, setIsFinalState] = useState(false);
 
-  const timer = useAppSelector((state) => state.water.timer);
+  const { timer, level } = useAppSelector((state) => state.water);
 
   useEffect(() => {
     setIsFinalState(true);

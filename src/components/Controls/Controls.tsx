@@ -5,28 +5,27 @@ import {
   switchWaterOn,
   speedUpWater,
   switchTimerOff,
+  newGameStarted,
+  levelStarted,
 } from '../../store/features/water';
 import { useAppDispatch, useAppSelector } from '../../utils/reduxHooks';
 
-interface ControlsProps {
-  newGameHandler: () => void;
-  newLevelHandler: () => void;
-  buttonNextLevel: React.RefObject<HTMLButtonElement>;
-  buttonNewGame: React.RefObject<HTMLButtonElement>;
-  level: number;
-}
-
-const Controls: React.FC<ControlsProps> = ({
-  newGameHandler,
-  newLevelHandler,
-  buttonNextLevel,
-  buttonNewGame,
-  level,
-}) => {
-  const { water, gameOver, gameWon, timer, levelDone } = useAppSelector(
-    (state) => state.water
-  );
+const Controls: React.FC = () => {
+  const {
+    waterFlow,
+    gameOver,
+    gameWon,
+    timer,
+    levelDone,
+    level,
+  } = useAppSelector((state) => state.water);
   const dispatch = useAppDispatch();
+
+  function blurActiveElement() {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }
 
   return (
     <div>
@@ -36,23 +35,41 @@ const Controls: React.FC<ControlsProps> = ({
             onClick={() => {
               dispatch(switchWaterOn());
               dispatch(switchTimerOff());
+              blurActiveElement();
             }}
           >
             Turn the water on!
           </button>
         )}
-        {water && (
-          <button onClick={() => dispatch(speedUpWater())}>Speed up!</button>
+        {waterFlow && (
+          <button
+            onClick={() => {
+              dispatch(speedUpWater());
+              blurActiveElement();
+            }}
+          >
+            Speed up!
+          </button>
         )}
       </div>
       {levelDone && !gameWon && !gameOver && (
-        <button onClick={newLevelHandler} ref={buttonNextLevel}>
+        <button
+          onClick={() => {
+            blurActiveElement();
+            dispatch(levelStarted());
+          }}
+        >
           Next Level
         </button>
       )}
       <div className={styles.info}>
         <p>{LEVEL_SETTINGS[level].text}</p>
-        <button onClick={newGameHandler} ref={buttonNewGame}>
+        <button
+          onClick={() => {
+            blurActiveElement();
+            dispatch(newGameStarted());
+          }}
+        >
           New Game
         </button>
       </div>

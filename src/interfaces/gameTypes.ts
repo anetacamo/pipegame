@@ -1,19 +1,19 @@
 export interface PipeGameTypes {
   body: Body;
-  gameOver: boolean;
   gameWon: boolean;
+  gameOver: boolean;
   headLocation: number[];
   level: number;
   levelDone: boolean;
-  rows: number;
   score: number;
-  tileCode: Record<string, string>;
-  timer: number;
+  speed: number;
+  speedUp: boolean;
+  timer: boolean;
   upcomingFields: number[];
   waterBody: string[];
-  waterDirection: string;
+  waterDirection: number;
   waterFlow: boolean;
-  waterHead: number[];
+  waterHeadLocation: number[];
 }
 
 interface Body {

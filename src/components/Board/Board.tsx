@@ -1,27 +1,21 @@
 import React from 'react';
-import { PipeGameTypes } from '../../interfaces/gameTypes';
 import styles from './Board.module.scss';
 import { FIELD_IN_PX, BORDER } from '../../constants/GameConstants';
 import { useAppSelector } from '../../utils/reduxHooks';
+import { LEVEL_SETTINGS } from '../../constants/LevelConstants';
 
-interface DesktopProps {
-  rows: number;
-  headLocation: number[];
-  body: PipeGameTypes['body'];
-  waterBody: PipeGameTypes['waterBody'];
-}
-
-const Desktop: React.FC<DesktopProps> = ({
-  rows,
-  headLocation,
-  body,
-  waterBody,
-}) => {
+const Desktop: React.FC = () => {
   let message = '';
-
-  const gameWon = useAppSelector((state) => state.water.gameWon);
-  const levelDone = useAppSelector((state) => state.water.levelDone);
-  const gameOver = useAppSelector((state) => state.water.gameOver);
+  const {
+    gameWon,
+    level,
+    levelDone,
+    gameOver,
+    headLocation,
+    body,
+    waterBody,
+  } = useAppSelector((state) => state.water);
+  const rows = LEVEL_SETTINGS[level].initial_rows;
 
   const convertMessage = (message: string) => {
     return message

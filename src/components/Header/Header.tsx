@@ -1,12 +1,10 @@
 import React from 'react';
 import styles from './Header.module.scss';
+import { useAppSelector } from '../../utils/reduxHooks';
 
-interface HeaderProps {
-  score: number;
-  level: number;
-}
+const Header: React.FC = () => {
+  const { level, score } = useAppSelector((state) => state.water);
 
-const Header: React.FC<HeaderProps> = ({ score, level }) => {
   return (
     <div className={styles.score}>
       {`${level}_score_${score}`
